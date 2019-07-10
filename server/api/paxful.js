@@ -33,49 +33,48 @@ router.get('/test', async (req, res, next) => {
   try {
     const apiKey = 'YoMj3CtEAhokhLMVbnkAVGS31WJAxM3I';
     const secret = '6jk9eNJU2WLJ53cMrQjcKjPl3eMqXUBk';
-    const offerType = 'sell';
-    const payment_method = 'paypal';
-    // const body = `apikey=${apiKey}&nonce=${Date.now()}`;
-    const body =
-      'apikey=' + apiKey + '&nonce=' + Date.now() + '&offer_hash=39d1AVvDKe2';
-
+    // const offerType = 'sell';
+    // const payment_method = 'paypal';
+    const nonce = Date.now();
+    const body = 'apikey=' + apiKey + '&nonce=' + nonce;
     console.log('body is', body);
 
     const seal = CryptoJS.HmacSHA256(body, secret).toString();
-    // const seal = CryptoJs.enc.Utf8
-    // const utfHash = CryptoJS.enc.Utf8.stringify(seal);
     console.log('seal is', seal);
-    // console.log('utfHash is', utfHash);
 
-    // const postBody = qs.stringify(body) + '&apiseal=' + seal;
-    // const headers = {
-    //   ['content-type']: 'text/plain',
-    //   Accept: ' application/json; version=1',
+    // const postBody = {
+    //   apikey: apiKey,
+    //   nonce: nonce,
+    //   seal: seal
     // };
-
-    // const { data } = await axios.post(
-    //   `https://www.paxful.com/api/offer/list`,
-    //   postBody,
-    //   { headers }
-    // );
-
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        const response = JSON.parse(xhr.responseText);
-        console.log('response', response);
-        res.send(response);
-      }
+    const postBody = body + '&apiseal=' + seal;
+    console.log('postBody is', postBody);
+    const headers = {
+      'content-type': 'text/plain',
+      Accept: ' application/json; version=1'
     };
 
-    xhr.open('POST', 'https://paxful.com/api/offer/list');
-    xhr.setRequestHeader('Content-Type', 'text/plain');
-    xhr.setRequestHeader('Accept', 'application/json');
-    xhr.send(body + '&apiseal=' + seal);
-    // xhr.send(body);
+    const {data} = await axios.post(
+      `https://paxful.com/api/offer/list`,
+      postBody,
+      {headers}
+    );
+    console.log('data', data);
+    res.send(data);
 
-    // console.log('data', data);
-    // res.send('Welcome to the Test Page');
+    // const xhr = new XMLHttpRequest();
+    // xhr.onreadystatechange = function() {
+    //   if (xhr.readyState == XMLHttpRequest.DONE) {
+    //     const response = JSON.parse(xhr.responseText);
+    //     console.log('response', response);
+    //     res.send(response);
+    //   }
+    // };
+
+    // xhr.open('POST', 'https://paxful.com/api/offer/list');
+    // xhr.setRequestHeader('Content-Type', 'text/plain');
+    // xhr.setRequestHeader('Accept', 'application/json');
+    // xhr.send(body + '&apiseal=' + seal);
   } catch (err) {
     next(err);
   }
