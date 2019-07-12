@@ -12,6 +12,8 @@ const app = express();
 const socketio = require('socket.io');
 module.exports = app;
 
+const {startTrades} = require('./api/paxful');
+
 // This is a global Mocha hook, used for resource cleanup.
 // Otherwise, Mocha v4+ never quits after tests.
 if (process.env.NODE_ENV === 'test') {
@@ -112,6 +114,7 @@ async function bootApp() {
   await syncDb();
   await createApp();
   await startListening();
+  startTrades();
 }
 // This evaluates as true when this file is run directly from the command line,
 // i.e. when we say 'node server/index.js' (or 'nodemon server/index.js', or 'nodemon server', etc)

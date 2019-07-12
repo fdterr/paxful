@@ -2,10 +2,10 @@ const axios = require('axios');
 const CryptoJS = require('crypto-js');
 
 const router = require('express').Router();
-module.exports = router;
 
 const {apiKey, secret, accountSid, authToken} = require('../../secrets');
 const client = require('twilio')(accountSid, authToken);
+const {User} = require('../db/models');
 
 router.get('/sendText', (req, res) => {
   try {
@@ -29,17 +29,19 @@ router.get('/', (req, res, next) => {
 
 router.get('/test', async (req, res, next) => {
   try {
-    // const offerType = 'sell';
-    // const payment_method = 'paypal';
-    const nonce = Date.now();
-    const body = 'apikey=' + apiKey + '&nonce=' + nonce;
-    console.log('body is', body);
+    res.send('Test is working');
+  } catch (err) {
+    next(err);
+  }
+});
 
+const getTrades = async () => {
+  try {
+    const body = 'apikey=' + apiKey + '&nonce=' + Date.now();
     const seal = CryptoJS.HmacSHA256(body, secret).toString();
-    console.log('seal is', seal);
 
     const postBody = body + '&apiseal=' + seal;
-    console.log('postBody is', postBody);
+    // console.log('postBody is', postBody);
     const headers = {
       'content-type': 'text/plain',
       Accept: ' application/json; version=1'
@@ -50,9 +52,45 @@ router.get('/test', async (req, res, next) => {
       postBody,
       {headers}
     );
-    console.log('headers', response.headers);
-    res.send(response.data);
+    const {data} = response.data;
+    // console.log('headers', response.headers);
+    console.log('response', data);
+    const {count} = data;
+
+    const user = await User.findOne({where: {id: 1}});
+    if (count > user.tradeCount) {
+      console.log('new trade!');
+      sendText();
+    }
+    await user.update({tradeCount: count});
+    // console.log('found user', user.email);
   } catch (err) {
-    next(err);
+    console.error(err);
   }
-});
+};
+
+const sendText = async () => {
+  try {
+    client.messages
+      .create({
+        body: 'New Transaction',
+        from: '+19172017304',
+        to: '+19176583370'
+      })
+      .then(message => console.log(message.sid))
+      .done();
+    // res.status(201).send('Transmission successful');
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+startTrades = () => {
+  getTrades();
+  setInterval(() => {
+    // console.log('inside interval');
+    getTrades();
+  }, 45000);
+};
+
+module.exports = {router, startTrades};
