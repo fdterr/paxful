@@ -7,26 +7,6 @@ const {apiKey, secret, accountSid, authToken} = require('../../secrets');
 const client = require('twilio')(accountSid, authToken);
 const {User} = require('../db/models');
 
-router.get('/sendText', (req, res) => {
-  try {
-    client.messages
-      .create({
-        body: 'New Transaction',
-        from: '+19172017304',
-        to: '+19176583370'
-      })
-      .then(message => console.log(message.sid))
-      .done();
-    res.status(201).send('Transmission successful');
-  } catch (err) {
-    console.error(err);
-  }
-});
-
-router.get('/', (req, res, next) => {
-  res.send('Welcome to the home page!');
-});
-
 router.get('/test', async (req, res, next) => {
   try {
     res.send('Test is working');
@@ -41,7 +21,6 @@ const getTrades = async () => {
     const seal = CryptoJS.HmacSHA256(body, secret).toString();
 
     const postBody = body + '&apiseal=' + seal;
-    // console.log('postBody is', postBody);
     const headers = {
       'content-type': 'text/plain',
       Accept: ' application/json; version=1'
@@ -59,27 +38,27 @@ const getTrades = async () => {
 
     const user = await User.findOne({where: {id: 1}});
     if (count > user.tradeCount) {
-      console.log('new trade!');
-      sendText();
+      const difference = count - user.tradeCount;
+      // console.log('new trade!');
+      await sendText(difference);
     }
     await user.update({tradeCount: count});
-    // console.log('found user', user.email);
   } catch (err) {
     console.error(err);
   }
 };
 
-const sendText = async () => {
+const sendText = async number => {
   try {
     client.messages
       .create({
-        body: 'New Transaction',
+        body: number === 1 ? '1 New Trade' : `${number} New Trades`,
         from: '+19172017304',
         to: '+19176583370'
       })
       .then(message => console.log(message.sid))
       .done();
-    // res.status(201).send('Transmission successful');
+    console.log('Text Message Sent');
   } catch (err) {
     console.error(err);
   }
@@ -88,7 +67,6 @@ const sendText = async () => {
 startTrades = () => {
   getTrades();
   setInterval(() => {
-    // console.log('inside interval');
     getTrades();
   }, 45000);
 };
