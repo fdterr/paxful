@@ -7,15 +7,16 @@ const {apiKey, secret, accountSid, authToken} = require('../../secrets');
 const client = require('twilio')(accountSid, authToken);
 const {User} = require('../db/models');
 
-router.get('/test', async (req, res, next) => {
+router.get('/trades', async (req, res, next) => {
   try {
-    res.send('Test is working');
+    const me = await User.findOne({where: {id: 1}});
+    res.json(me.trades);
   } catch (err) {
     next(err);
   }
 });
 
-const getTrades = async () => {
+const getTrades = async res => {
   try {
     const body = 'apikey=' + apiKey + '&nonce=' + Date.now();
     const seal = CryptoJS.HmacSHA256(body, secret).toString();
@@ -32,17 +33,16 @@ const getTrades = async () => {
       {headers}
     );
     const {data} = response.data;
-    // console.log('headers', response.headers);
     console.log('response', data);
     const {count} = data;
 
     const user = await User.findOne({where: {id: 1}});
     if (count > user.tradeCount) {
       const difference = count - user.tradeCount;
-      // console.log('new trade!');
       await sendText(difference);
     }
-    await user.update({tradeCount: count});
+    await user.update({tradeCount: count, trades: data.trades});
+    // res.send(data.trades);
   } catch (err) {
     console.error(err);
   }
