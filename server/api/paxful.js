@@ -16,9 +16,53 @@ router.get('/trades', async (req, res, next) => {
   }
 });
 
-const getTrades = async res => {
+// router.get('/responder', async (req, res, next) => {
+//   try {
+//     // const parameters = `username=`
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+
+// const prepareRequest = () => {
+
+// }
+
+const getResponder = async username => {
+  const parameters = `&username=${username}`;
+  const results = await makeRequest(
+    'https://paxful.com/api/user/info',
+    parameters
+  );
+  return results;
+  // console.log('results are ', results);
+};
+
+const getTrades = async () => {
   try {
-    const body = 'apikey=' + apiKey + '&nonce=' + Date.now();
+    const response = await makeRequest('https://paxful.com/api/trade/list');
+    console.log('response is', response);
+    const {count, trades} = response;
+
+    const user = await User.findOne({where: {id: 1}});
+    if (count > user.tradeCount) {
+      const difference = count - user.tradeCount;
+      await sendText(difference);
+    }
+    for (let i = 0; i < trades.length; i++) {
+      const responder = await getResponder(trades[i].responder_username);
+      trades[i].responder_profile = responder;
+      console.log('got responder', responder);
+    }
+    await user.update({tradeCount: count, trades});
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const makeRequest = async (link, parameters) => {
+  try {
+    const body = 'apikey=' + apiKey + '&nonce=' + Date.now() + parameters || '';
     const seal = CryptoJS.HmacSHA256(body, secret).toString();
 
     const postBody = body + '&apiseal=' + seal;
@@ -27,22 +71,8 @@ const getTrades = async res => {
       Accept: ' application/json; version=1'
     };
 
-    const response = await axios.post(
-      `https://paxful.com/api/trade/list`,
-      postBody,
-      {headers}
-    );
-    const {data} = response.data;
-    console.log('response', data);
-    const {count} = data;
-
-    const user = await User.findOne({where: {id: 1}});
-    if (count > user.tradeCount) {
-      const difference = count - user.tradeCount;
-      await sendText(difference);
-    }
-    await user.update({tradeCount: count, trades: data.trades});
-    // res.send(data.trades);
+    const response = await axios.post(link, postBody, {headers});
+    return response.data.data;
   } catch (err) {
     console.error(err);
   }
@@ -65,8 +95,11 @@ const sendText = async number => {
 };
 
 startTrades = () => {
+  const tradeLink = `https://paxful.com/api/trade/list`;
+  // makeRequest(tradeLink);
   getTrades();
   setInterval(() => {
+    // makeRequest(tradeLink);
     getTrades();
   }, 45000);
 };

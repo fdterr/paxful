@@ -62,7 +62,7 @@ export const apiTrades = () => async dispatch => {
 export default function(state = defaultState, action) {
   switch (action.type) {
     case GET_TRADES:
-      return action.trades;
+      return {...state, trades: action.trades};
     default:
       return state;
   }
