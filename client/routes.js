@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter, Route, Switch} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {Login, Signup, UserHome, Trades} from './components';
-import {me} from './store';
+import {Login, Signup, UserHome, Trades, Offers} from './components';
+import {me, apiOffers} from './store';
 
 /**
  * COMPONENT
@@ -11,6 +11,7 @@ import {me} from './store';
 class Routes extends Component {
   componentDidMount() {
     this.props.loadInitialData();
+    this.props.getOffers();
   }
 
   render() {
@@ -21,6 +22,8 @@ class Routes extends Component {
         {/* Routes placed here are available to all visitors */}
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
+        <Route path="/trades" component={Trades} />
+        <Route path="/offers" component={Offers} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
@@ -28,7 +31,7 @@ class Routes extends Component {
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
-        <Route component={Trades} />
+        <Route component={Offers} />
       </Switch>
     );
   }
@@ -47,9 +50,8 @@ const mapState = state => {
 
 const mapDispatch = dispatch => {
   return {
-    loadInitialData() {
-      dispatch(me());
-    }
+    loadInitialData: () => dispatch(me()),
+    getOffers: () => dispatch(apiOffers())
   };
 };
 

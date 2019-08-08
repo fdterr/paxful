@@ -16,17 +16,14 @@ router.get('/trades', async (req, res, next) => {
   }
 });
 
-// router.get('/responder', async (req, res, next) => {
-//   try {
-//     // const parameters = `username=`
-//   } catch (err) {
-//     next(err);
-//   }
-// });
-
-// const prepareRequest = () => {
-
-// }
+router.get('/offers', async (req, res, next) => {
+  try {
+    const offers = await getOffers();
+    res.json(offers);
+  } catch (err) {
+    next(err);
+  }
+});
 
 const getResponder = async username => {
   const parameters = `&username=${username}`;
@@ -60,9 +57,26 @@ const getTrades = async () => {
   }
 };
 
+const getOffers = async () => {
+  try {
+    const parameters =
+      '&offer_type=sell&payment_method=onevanilla-myvanilla-visamastercard-gift-card';
+    // const parameters = '';
+    const response = await makeRequest(
+      'https://paxful.com/api/offer/all',
+      parameters
+    );
+    // console.log('offer data is', response);
+    return response;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const makeRequest = async (link, parameters) => {
   try {
     const body = 'apikey=' + apiKey + '&nonce=' + Date.now() + parameters || '';
+    console.log('body is', body);
     const seal = CryptoJS.HmacSHA256(body, secret).toString();
 
     const postBody = body + '&apiseal=' + seal;

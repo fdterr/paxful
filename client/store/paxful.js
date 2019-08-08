@@ -5,6 +5,7 @@ import history from '../history';
  * ACTION TYPES
  */
 const GET_TRADES = 'GET_TRADES';
+const GET_OFFERS = 'GET_OFFERS';
 // const REMOVE_USER = 'REMOVE_USER';
 
 /**
@@ -16,6 +17,7 @@ const defaultState = {};
  * ACTION CREATORS
  */
 const getTrades = trades => ({type: GET_TRADES, trades});
+const getOffers = offers => ({type: GET_OFFERS, offers});
 // const removeUser = () => ({type: REMOVE_USER});
 
 /**
@@ -25,6 +27,16 @@ export const apiTrades = () => async dispatch => {
   try {
     const res = await axios.get('/api/paxful/trades');
     dispatch(getTrades(res.data || defaultState));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const apiOffers = () => async dispatch => {
+  try {
+    const {data} = await axios.get('/api/paxful/offers');
+    console.log('store data is', data);
+    dispatch(getOffers(data.offers || defaultState));
   } catch (err) {
     console.error(err);
   }
@@ -63,6 +75,8 @@ export default function(state = defaultState, action) {
   switch (action.type) {
     case GET_TRADES:
       return {...state, trades: action.trades};
+    case GET_OFFERS:
+      return {...state, offers: action.offers};
     default:
       return state;
   }
