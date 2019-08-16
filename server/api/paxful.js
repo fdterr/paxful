@@ -10,6 +10,7 @@ const {
   authToken,
   ipqsToken
 } = require('../../secrets');
+
 const client = require('twilio')(accountSid, authToken);
 const {User} = require('../db/models');
 
@@ -36,6 +37,18 @@ router.get('/address', async (req, res, next) => {
     console.log('IP REQUESTED');
     const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
     res.send(ip);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/ipqs', async (req, res, next) => {
+  try {
+    const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+    const reqAddress = `https://www.ipqualityscore.com/api/json/ip/${ipqsToken}/${ip}?strictness=2&fast=1`;
+    const {data} = await axios.get(reqAddress);
+    console.log('ipqs data is', data);
+    res.send(data);
   } catch (err) {
     next(err);
   }
