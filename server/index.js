@@ -114,7 +114,7 @@ async function bootApp() {
   await syncDb();
   await createApp();
   await startListening();
-  startTrades();
+  // startTrades();
 }
 // This evaluates as true when this file is run directly from the command line,
 // i.e. when we say 'node server/index.js' (or 'nodemon server/index.js', or 'nodemon server', etc)

@@ -6,6 +6,8 @@ import history from '../history';
  */
 const GET_TRADES = 'GET_TRADES';
 const GET_OFFERS = 'GET_OFFERS';
+const GET_IP = 'GET_IP';
+const CLEAR_IP = 'CLEAR_IP';
 // const REMOVE_USER = 'REMOVE_USER';
 
 /**
@@ -18,6 +20,8 @@ const defaultState = {};
  */
 const getTrades = trades => ({type: GET_TRADES, trades});
 const getOffers = offers => ({type: GET_OFFERS, offers});
+const getIP = ip => ({type: GET_IP, ip});
+const clearIP = () => ({type: CLEAR_IP});
 // const removeUser = () => ({type: REMOVE_USER});
 
 /**
@@ -35,11 +39,25 @@ export const apiTrades = () => async dispatch => {
 export const apiOffers = () => async dispatch => {
   try {
     const {data} = await axios.get('/api/paxful/offers');
-    console.log('store data is', data);
     dispatch(getOffers(data.offers || defaultState));
   } catch (err) {
     console.error(err);
   }
+};
+
+export const getIPAddress = () => async dispatch => {
+  try {
+    const {data} = await axios.get('/api/paxful/address');
+    dispatch(getIP(data));
+    console.log('ip is', data);
+    console.log('inside ip address store');
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const clearIPAddress = () => async dispatch => {
+  dispatch(clearIP());
 };
 
 // export const auth = (email, password, method) => async dispatch => {
@@ -77,6 +95,10 @@ export default function(state = defaultState, action) {
       return {...state, trades: action.trades};
     case GET_OFFERS:
       return {...state, offers: action.offers};
+    case GET_IP:
+      return {...state, ip: action.ip};
+    case CLEAR_IP:
+      return {...state, ip: undefined};
     default:
       return state;
   }

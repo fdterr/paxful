@@ -19,9 +19,9 @@ const Offers = props => {
       </Table.Header>
       <Table.Body>
         {props.offers.map(offer => {
-          // const responder = trade.responder_profile;
+          const value = +offer.margin > 50;
           return (
-            <Table.Row key={offer.offer_id}>
+            <Table.Row key={offer.offer_id} positive={value} negative={!value}>
               <Table.Cell>{offer.offer_owner_username}</Table.Cell>
               <Table.Cell>{offer.payment_method_name}</Table.Cell>
               <Table.Cell>
@@ -35,9 +35,7 @@ const Offers = props => {
       </Table.Body>
     </Table>
   ) : (
-    // <Segment>
     <Loader active />
-    // </Segment>
   );
 };
 
@@ -47,10 +45,10 @@ const mapState = state => {
   };
 };
 
-const mapDispatch = dispatch => {
-  return {
-    getOffers: () => dispatch(apiOffers())
-  };
-};
+// const mapDispatch = dispatch => {
+//   return {
+//     getOffers: () => dispatch(apiOffers())
+//   };
+// };
 
 export default connect(mapState, null)(Offers);

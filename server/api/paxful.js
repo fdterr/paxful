@@ -3,7 +3,13 @@ const CryptoJS = require('crypto-js');
 
 const router = require('express').Router();
 
-const {apiKey, secret, accountSid, authToken} = require('../../secrets');
+const {
+  apiKey,
+  secret,
+  accountSid,
+  authToken,
+  ipqsToken
+} = require('../../secrets');
 const client = require('twilio')(accountSid, authToken);
 const {User} = require('../db/models');
 
@@ -20,6 +26,16 @@ router.get('/offers', async (req, res, next) => {
   try {
     const offers = await getOffers();
     res.json(offers);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/address', async (req, res, next) => {
+  try {
+    console.log('IP REQUESTED');
+    const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+    res.send(ip);
   } catch (err) {
     next(err);
   }

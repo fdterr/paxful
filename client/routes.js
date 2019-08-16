@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter, Route, Switch} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {Login, Signup, UserHome, Trades, Offers} from './components';
-import {me, apiOffers} from './store';
+import {Login, Signup, UserHome, Trades, Offers, Address} from './components';
+import {me, apiOffers, getIPAddress} from './store';
 
 /**
  * COMPONENT
@@ -24,6 +24,12 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/trades" component={Trades} />
         <Route path="/offers" component={Offers} />
+        <Route
+          path="/address"
+          render={props => (
+            <Address {...props} acquireIP={this.props.ipAddress} />
+          )}
+        />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
@@ -51,7 +57,8 @@ const mapState = state => {
 const mapDispatch = dispatch => {
   return {
     loadInitialData: () => dispatch(me()),
-    getOffers: () => dispatch(apiOffers())
+    getOffers: () => dispatch(apiOffers()),
+    ipAddress: () => dispatch(getIPAddress())
   };
 };
 
