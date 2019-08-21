@@ -39,7 +39,7 @@ router.get('/offers', async (req, res, next) => {
 
 router.get('/address', async (req, res, next) => {
   try {
-    console.log('IP REQUESTED');
+    console.log('IP REQUESTED', req.header);
     const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
     res.send(ip);
   } catch (err) {
