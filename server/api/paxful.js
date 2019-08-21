@@ -39,7 +39,7 @@ router.get('/offers', async (req, res, next) => {
 
 router.get('/address', async (req, res, next) => {
   try {
-    console.log('IP REQUESTED', req.connection);
+    console.log('IP REQUESTED');
     const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
     res.send(ip);
   } catch (err) {
@@ -49,7 +49,10 @@ router.get('/address', async (req, res, next) => {
 
 router.get('/ipqs', async (req, res, next) => {
   try {
-    const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+    let ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+    if (ip.substr(0, 7) == '::ffff:') {
+      ip = ip.substr(7);
+    }
     const reqAddress = `https://www.ipqualityscore.com/api/json/ip/${ipqsToken}/${ip}?strictness=2&fast=1`;
     const {data} = await axios.get(reqAddress);
     console.log('ipqs data is', data);

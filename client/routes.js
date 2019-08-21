@@ -24,12 +24,13 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/trades" component={Trades} />
         <Route path="/offers" component={Offers} />
-        <Route
+        {/* <Route
           path="/address"
           render={props => (
             <Address {...props} acquireIP={this.props.ipAddress} />
           )}
-        />
+        /> */}
+        <Route path="/address" component={Address} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
