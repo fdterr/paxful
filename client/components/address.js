@@ -52,15 +52,15 @@ class Address extends Component {
           </Table.Row>
           <Table.Row>
             <Table.Cell>Proxy</Table.Cell>
-            <Table.Cell>{proxy}</Table.Cell>
+            <Table.Cell>{proxy.toString()}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>VPN</Table.Cell>
-            <Table.Cell>{vpn}</Table.Cell>
+            <Table.Cell>{vpn.toString()}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>TOR</Table.Cell>
-            <Table.Cell>{tor}</Table.Cell>
+            <Table.Cell>{tor.toString()}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Fraud Score</Table.Cell>
@@ -68,11 +68,11 @@ class Address extends Component {
           </Table.Row>
           <Table.Row>
             <Table.Cell>Recent Abuse</Table.Cell>
-            <Table.Cell>{recent_abuse}</Table.Cell>
+            <Table.Cell>{recent_abuse.toString()}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>Bot Activity</Table.Cell>
-            <Table.Cell>{bot_status}</Table.Cell>
+            <Table.Cell>{bot_status.toString()}</Table.Cell>
           </Table.Row>
         </Table.Body>
       </Table>
