@@ -3,13 +3,17 @@ const CryptoJS = require('crypto-js');
 
 const router = require('express').Router();
 
-const {
-  apiKey,
-  secret,
-  accountSid,
-  authToken,
-  ipqsToken
-} = require('../../secrets');
+// const {
+//   apiKey,
+//   secret,
+//   accountSid,
+//   authToken,
+//   ipqsToken
+// } = require('../../secrets');
+
+const apiKey = process.env.paxfulApi;
+const secret = process.env.paxfulSecret;
+const ipqsToken = process.env.ipqsToken;
 
 const client = require('twilio')(accountSid, authToken);
 const {User} = require('../db/models');
