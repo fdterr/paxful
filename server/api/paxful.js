@@ -14,6 +14,7 @@ const router = require('express').Router();
 const apiKey = process.env.paxfulApi;
 const secret = process.env.paxfulSecret;
 const ipqsToken = process.env.ipqsToken;
+const {accountSid, authToken} = process.env;
 
 const client = require('twilio')(accountSid, authToken);
 const {User} = require('../db/models');
