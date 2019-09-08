@@ -9,6 +9,7 @@ const GET_OFFERS = 'GET_OFFERS';
 const GET_IP = 'GET_IP';
 const CLEAR_IP = 'CLEAR_IP';
 const TEST_IP = 'TEST_IP';
+const GII_TEST = 'GII_TEST';
 
 // const REMOVE_USER = 'REMOVE_USER';
 
@@ -25,6 +26,7 @@ const getOffers = offers => ({type: GET_OFFERS, offers});
 const getIP = ip => ({type: GET_IP, ip});
 const clearIP = () => ({type: CLEAR_IP});
 const testIP = result => ({type: TEST_IP, result});
+const giiTest = result => ({type: GII_TEST, result});
 // const removeUser = () => ({type: REMOVE_USER});
 
 /**
@@ -72,6 +74,15 @@ export const testIPAddress = () => async dispatch => {
   }
 };
 
+export const giiTestThunk = () => async dispatch => {
+  try {
+    const {data} = await axios.get('/api/paxful/gii');
+    dispatch(giiTest(data));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // export const auth = (email, password, method) => async dispatch => {
 //   let res;
 //   try {
@@ -113,6 +124,8 @@ export default function(state = defaultState, action) {
       return {...state, ip: undefined};
     case TEST_IP:
       return {...state, ipTest: action.result};
+    case GII_TEST:
+      return {...state, giiTest: action.result};
     default:
       return state;
   }

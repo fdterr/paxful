@@ -49,18 +49,35 @@ router.get('/address', async (req, res, next) => {
 
 router.get('/ipqs', async (req, res, next) => {
   try {
-    let ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
-    if (ip.substr(0, 7) == '::ffff:') {
-      ip = ip.substr(7);
-    }
+    const ip = ipAddress(req);
     const reqAddress = `https://www.ipqualityscore.com/api/json/ip/${ipqsToken}/${ip}?strictness=2&fast=1`;
     const {data} = await axios.get(reqAddress);
-    console.log('ipqs data is', data);
     res.send(data);
   } catch (err) {
     next(err);
   }
 });
+
+router.get('/gii', async (req, res, next) => {
+  try {
+    // const ip = ipAddress(req);
+    const ip = '108.30.59.249';
+    const reqAddress = `http://check.getipintel.net/check.php?ip=${ip}&contact=admin@email.com&flags=f&format=json`;
+    const {data} = await axios.get(reqAddress);
+    console.log('gii data is', data);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+});
+
+const ipAddress = req => {
+  let ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  if (ip.substr(0, 7) == '::ffff:') {
+    ip = ip.substr(7);
+  }
+  return ip;
+};
 
 const getResponder = async username => {
   const parameters = `&username=${username}`;
