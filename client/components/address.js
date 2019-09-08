@@ -36,7 +36,7 @@ class Address extends Component {
 
     return (
       <Segment>
-        <Grid columns={2}>
+        <Grid columns={2} divided>
           <Grid.Column>
             <center>
               <h2>IP Quality Score</h2>
@@ -130,7 +130,7 @@ class Address extends Component {
             )}
           </Grid.Column>
         </Grid>
-        <Divider vertical />
+        {/* <Divider vertical /> */}
       </Segment>
     );
   }
