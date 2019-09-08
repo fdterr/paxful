@@ -60,8 +60,7 @@ router.get('/ipqs', async (req, res, next) => {
 
 router.get('/gii', async (req, res, next) => {
   try {
-    // const ip = ipAddress(req);
-    const ip = '108.30.59.249';
+    const ip = ipAddress(req);
     const reqAddress = `http://check.getipintel.net/check.php?ip=${ip}&contact=admin@email.com&flags=f&format=json`;
     const {data} = await axios.get(reqAddress);
     console.log('gii data is', data);
