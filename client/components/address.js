@@ -92,7 +92,7 @@ class Address extends Component {
               </div>
             )}
           </Grid.Column>
-          <Divider vertical />
+
           <Grid.Column>
             <center>
               <h2>Get IP Intel</h2>
@@ -130,6 +130,7 @@ class Address extends Component {
             )}
           </Grid.Column>
         </Grid>
+        <Divider vertical />
       </Segment>
     );
   }
