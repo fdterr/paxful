@@ -52,6 +52,8 @@ router.get('/ipqs', async (req, res, next) => {
     const ip = ipAddress(req);
     const reqAddress = `https://www.ipqualityscore.com/api/json/ip/${ipqsToken}/${ip}?strictness=2&fast=1`;
     const {data} = await axios.get(reqAddress);
+    data.address = ip;
+    console.log('ipqs data is', data);
     res.send(data);
   } catch (err) {
     next(err);
@@ -166,7 +168,7 @@ startTrades = () => {
   // makeRequest(tradeLink);
   getTrades();
   setInterval(() => {
-    // makeRequest(tradeLink);
+    // makeRequest(tradeLink);i
     getTrades();
   }, 45000);
 };

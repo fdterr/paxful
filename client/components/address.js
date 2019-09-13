@@ -27,7 +27,8 @@ class Address extends Component {
       recent_abuse,
       bot_status,
       success,
-      fraud_score
+      fraud_score,
+      address
     } =
       this.props.ipTest || {};
 
@@ -44,6 +45,10 @@ class Address extends Component {
             {this.props.ipTest ? (
               <Table>
                 <Table.Body>
+                  <Table.Row>
+                    <Table.Cell>IP Address</Table.Cell>
+                    <Table.Cell>{address}</Table.Cell>
+                  </Table.Row>
                   <Table.Row>
                     <Table.Cell>Country</Table.Cell>
                     <Table.Cell>{country_code}</Table.Cell>
@@ -101,17 +106,16 @@ class Address extends Component {
               <Table>
                 <Table.Body>
                   <Table.Row>
+                    <Table.Cell>IP Address:</Table.Cell>
+                    <Table.Cell>{queryIP}</Table.Cell>
+                  </Table.Row>
+                  <Table.Row>
                     <Table.Cell>Status:</Table.Cell>
                     <Table.Cell>{status}</Table.Cell>
                   </Table.Row>
                   <Table.Row>
                     <Table.Cell>Result:</Table.Cell>
                     <Table.Cell>{result}</Table.Cell>
-                  </Table.Row>
-
-                  <Table.Row>
-                    <Table.Cell>IP Address:</Table.Cell>
-                    <Table.Cell>{queryIP}</Table.Cell>
                   </Table.Row>
                   <Table.Row>
                     <Table.Cell>Query Flags:</Table.Cell>
